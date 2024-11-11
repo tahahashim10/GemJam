@@ -1,4 +1,5 @@
 import { PayloadAction, configureStore, createSlice } from "@reduxjs/toolkit";
+import { moveBelowReducer } from "./reducers/moveBelow";
 
 const initialState : {
     board:string[];
@@ -15,6 +16,7 @@ const gemJamSlice = createSlice({
         updateBoard: (state, action: PayloadAction<string[]>) => {
             state.board = action.payload;
         },
+        moveBelow: moveBelowReducer,
     },
 })
 
@@ -24,7 +26,7 @@ export const store = configureStore({
     },
 });
 
-export const {updateBoard} = gemJamSlice.actions;
+export const {updateBoard, moveBelow} = gemJamSlice.actions;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

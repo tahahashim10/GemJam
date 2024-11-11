@@ -8,6 +8,9 @@ export const formulaForColumnOfFour = (boardSize: number) =>
 export const formulaForColumnOfThree = (boardSize: number) =>
     boardSize * boardSize - (boardSize + boardSize) - 1;
 
+export const formulaForMoveBelow = (boardSize: number) =>
+    boardSize * boardSize - boardSize -1;
+
 // generate invalidmoves for row of 4 and 3
 export const generateInvalidMoves = (
     boardSize: number,
@@ -20,4 +23,5 @@ export const generateInvalidMoves = (
         invalidMoves.push(i-1);
     }
     return invalidMoves;
-}
+};
+
