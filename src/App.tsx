@@ -3,6 +3,8 @@ import { useAppDispatch, useAppSelector } from './store/hooks'
 import { updateBoard } from './store';
 import { createBoard } from './utils/createBoard';
 import Board from './components/Board';
+import { isColumnOfFour, isColumnOfThree } from './utils/moveCheckLogic';
+import { formulaForColumnOfFour, formulaForColumnOfThree } from './utils/formulas';
 
 function App() {
 
@@ -16,6 +18,17 @@ function App() {
   useEffect(() => {
     dispatch(updateBoard(createBoard(boardSize)))
   }, [boardSize, dispatch]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const newBoard = [...board];
+      // always check four before three, greedy approach to maximize popping
+      isColumnOfFour(newBoard, boardSize, formulaForColumnOfFour(boardSize));
+      isColumnOfThree(newBoard, boardSize, formulaForColumnOfThree(boardSize));
+      dispatch(updateBoard(newBoard));
+    }, 150);
+    return () => clearInterval(timeout)
+  }, [board, boardSize, dispatch]);
 
   return (
     <div className="flex items-center justify-center h-screen">
