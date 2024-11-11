@@ -1,17 +1,17 @@
-import gemGreen from '../assets/gem_green.png';
-import gemOrange from '../assets/gem_orange.png';
-import gemPink from '../assets/gem_pink.png';
-import gemPurple from '../assets/gem_purple.png';
-import gemRainbow from '../assets/gem_rainbow.png';
-import gemRed from '../assets/gem_red.png';
-import gemTeal from '../assets/gem_teal.png';
+import gemOne from '../assets/gem_one.png';
+import gemTwo from '../assets/gem_two.png';
+import gemThree from '../assets/gem_three.png';
+import gemFour from '../assets/gem_four.png';
+import gemFive from '../assets/gem_five.png';
+import gemSix from '../assets/gem_six.png';
+import gemSeven from '../assets/gem_seven.png';
 
 export const gems = [
-    gemGreen,
-    gemOrange,
-    gemPink,
-    gemPurple,
-    gemRainbow,
-    gemRed,
-    gemTeal,
+    gemOne,
+    gemTwo,
+    gemThree,
+    gemFour,
+    gemFive,
+    gemSix,
+    gemSeven,
 ];

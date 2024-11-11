@@ -5,5 +5,4 @@
 body {
     background-image: url('./assets/background.jpg');
     background-size: cover;
-    -ms-zoom: 50%;
 }

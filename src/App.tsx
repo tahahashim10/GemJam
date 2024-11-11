@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from './store/hooks'
 import { updateBoard } from './store';
 import { createBoard } from './utils/createBoard';
+import Board from './components/Board';
 
 function App() {
 
@@ -13,12 +14,14 @@ function App() {
   const boardSize = useAppSelector(({gemJam:{boardSize}}) => boardSize);
 
   useEffect(() => {
-    console.log(createBoard(boardSize));
-  }, []);
+    dispatch(updateBoard(createBoard(boardSize)))
+  }, [boardSize, dispatch]);
 
   return (
-    <div>App</div>
-  )
+    <div className="flex items-center justify-center h-screen">
+      <Board />
+    </div>
+  );
 }
 
 export default App
