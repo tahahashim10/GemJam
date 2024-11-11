@@ -10,5 +10,13 @@ export const isColumnOfFour = (
             i + boardSize * 2,
             i + boardSize * 3,
         ];
+        const decidedColor:string = newBoard[i];
+        const isBlank:boolean = newBoard[i] === "";
+
+        // check if gems are the same and are not blank, if true make the new tile blank
+        if(columnOfFour.every((gem:number) => newBoard[gem] === decidedColor && !isBlank)) {
+            columnOfFour.forEach((gem:number) => newBoard[gem] ="");
+            return true;
+        }
     }
 };
