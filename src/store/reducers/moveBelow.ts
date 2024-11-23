@@ -1,40 +1,36 @@
 import { WritableDraft } from "immer";
-import { formulaForMoveBelow } from "../../utils/formulas";
 import { gems } from "../../utils/gemData";
-
+import { formulaForMoveBelow } from "../../utils/formulas";
 
 export const moveBelowReducer = (
-    state: WritableDraft<{
-        board: string[];
-        boardSize: number;
-        squareBeingReplaced: Element | undefined;
-        squareBeingDragged: Element | undefined;
-    }>
+  state: WritableDraft<{
+    board: string[];
+    boardSize: number;
+    squareBeingReplaced: Element | undefined;
+    squareBeingDragged: Element | undefined;
+    score: number;
+  }>
 ) => {
-    const newBoard: string[] = [...state.board]
-    const { boardSize } = state;
+  const newBoard = [...state.board];
+  const { boardSize } = state;
 
-    let boardChanges:boolean = false;
-    const formulaForMove:number = formulaForMoveBelow(boardSize);
+  for (let i = 0; i < formulaForMoveBelow(boardSize); i++) {
+    const firstRow = Array(boardSize)
+      .fill(null)
+      .map((_, index) => index);
 
-    for(let i=0; i <= formulaForMove; i++) {
-        const firstRow = Array(boardSize).fill(0).map((_value:number, index:number) => index);
-        const isFirstRow = firstRow.includes(i);
-
-        if(isFirstRow && newBoard[i] === "") {
-            let randomNumber = Math.floor(Math.random() * gems.length);
-            newBoard[i] = gems[randomNumber];
-            boardChanges = true;
-        }
-
-        if(newBoard[i + boardSize] === "") {
-            newBoard[i+boardSize] = newBoard[i];
-            newBoard[i]="";
-            boardChanges=true;
-        }
-
-        if(boardChanges) state.board = newBoard;
+    // Handle the first row (generate new gems for empty spaces)
+    if (firstRow.includes(i) && newBoard[i] === "") {
+      const randomGem = gems[Math.floor(Math.random() * gems.length)];
+      newBoard[i] = randomGem;
     }
 
-    
+    // Move gems down if there's an empty space below
+    if (newBoard[i + boardSize] === "") {
+      newBoard[i + boardSize] = newBoard[i];
+      newBoard[i] = "";
+    }
+  }
+
+  state.board = newBoard;
 };

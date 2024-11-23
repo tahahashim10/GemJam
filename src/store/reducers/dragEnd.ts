@@ -24,72 +24,78 @@ export const dragEndReducer = (
   }>
 ) => {
   const newBoard = [...state.board];
-  let { boardSize, squareBeingDragged, squareBeingReplaced } = state;
+  const { boardSize, squareBeingDragged, squareBeingReplaced } = state;
 
-  const squareBeingDraggedId: number = parseInt(
-    squareBeingDragged?.getAttribute("gem-id") as string
+  if (!squareBeingDragged || !squareBeingReplaced) {
+    return; // Exit early if drag or drop elements are undefined
+  }
+
+  // Get IDs of the dragged and replaced squares
+  const squareBeingDraggedId = parseInt(
+    squareBeingDragged?.getAttribute("gem-id") || "-1"
   );
-  const squareBeingReplacedId: number = parseInt(
-    squareBeingReplaced?.getAttribute("gem-id") as string
+  const squareBeingReplacedId = parseInt(
+    squareBeingReplaced?.getAttribute("gem-id") || "-1"
   );
 
-  newBoard[squareBeingReplacedId] = squareBeingDragged?.getAttribute(
-    "src"
-  ) as string;
-  newBoard[squareBeingDraggedId] = squareBeingReplaced?.getAttribute(
-    "src"
-  ) as string;
+  // Swap the gems on the board
+  const draggedGem = squareBeingDragged?.getAttribute("src");
+  const replacedGem = squareBeingReplaced?.getAttribute("src");
 
-  const validMoves: number[] = [
-    squareBeingDraggedId - 1,
-    squareBeingDraggedId - boardSize,
-    squareBeingDraggedId + 1,
-    squareBeingDraggedId + boardSize,
+  newBoard[squareBeingReplacedId] = draggedGem || "";
+  newBoard[squareBeingDraggedId] = replacedGem || "";
+
+  // Calculate valid moves (left, right, up, down)
+  const validMoves = [
+    squareBeingDraggedId - 1, // Left
+    squareBeingDraggedId + 1, // Right
+    squareBeingDraggedId - boardSize, // Up
+    squareBeingDraggedId + boardSize, // Down
   ];
 
-  const validMove: boolean = validMoves.includes(squareBeingReplacedId);
+  const validMove = validMoves.includes(squareBeingReplacedId);
 
-  const isAColumnOfFour: boolean | undefined = isColumnOfFour(
+  // Check for matches after the move
+  const isAColumnOfFour = isColumnOfFour(
     newBoard,
     boardSize,
     formulaForColumnOfFour(boardSize)
   );
-  const isARowOfFour: boolean | undefined = checkForRowOfFour(
+  const isARowOfFour = checkForRowOfFour(
     newBoard,
     boardSize,
     generateInvalidMoves(boardSize, true)
   );
-  const isAColumnOfThree: boolean | undefined = isColumnOfThree(
+  const isAColumnOfThree = isColumnOfThree(
     newBoard,
     boardSize,
     formulaForColumnOfThree(boardSize)
   );
-  const isARowOfThree: boolean | undefined = checkForRowOfThree(
+  const isARowOfThree = checkForRowOfThree(
     newBoard,
     boardSize,
     generateInvalidMoves(boardSize)
   );
 
   if (
-    squareBeingReplacedId &&
     validMove &&
-    (isARowOfThree || isARowOfFour || isAColumnOfFour || isAColumnOfThree)
+    (isAColumnOfThree || isARowOfThree || isAColumnOfFour || isARowOfFour)
   ) {
-    if (isARowOfThree || isAColumnOfThree) state.score += 10;
-    if (isARowOfFour || isAColumnOfFour) state.score += 20;
+    if (isAColumnOfThree || isARowOfThree) state.score += 10;
+    if (isAColumnOfFour || isARowOfFour) state.score += 20;
 
+    // Play the drop sound for valid moves
     dropAudio.play();
 
-    squareBeingDragged = undefined;
-    squareBeingReplaced = undefined;
+    // Clear dragged and replaced squares
+    state.squareBeingDragged = undefined;
+    state.squareBeingReplaced = undefined;
   } else {
-    newBoard[squareBeingReplacedId] = squareBeingReplaced?.getAttribute(
-      "src"
-    ) as string;
-    newBoard[squareBeingDraggedId] = squareBeingDragged?.getAttribute(
-      "src"
-    ) as string;
+    // Revert the move if invalid
+    newBoard[squareBeingReplacedId] = replacedGem || "";
+    newBoard[squareBeingDraggedId] = draggedGem || "";
   }
 
+  // Update the board state
   state.board = newBoard;
 };
