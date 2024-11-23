@@ -2,47 +2,53 @@ import { PayloadAction, configureStore, createSlice } from "@reduxjs/toolkit";
 import { moveBelowReducer } from "./reducers/moveBelow";
 import { dragEndReducer } from "./reducers/dragEnd";
 
-const initialState : {
-    board:string[];
-    boardSize:number;
-    squareBeingDragged: Element | undefined;
-    squareBeingReplaced: Element | undefined;
+const initialState: {
+  board: string[];
+  boardSize: number;
+  squareBeingDragged: Element | undefined;
+  squareBeingReplaced: Element | undefined;
+  score: number;
 } = {
-    board:[], 
-    boardSize: 8,
-    squareBeingDragged: undefined,
-    squareBeingReplaced: undefined,
+  board: [],
+  boardSize: 8,
+  squareBeingDragged: undefined,
+  squareBeingReplaced: undefined,
+  score: 0,
 };
 
 const gemJamSlice = createSlice({
-    name:"gemJam",
-    initialState,
-    reducers: {
-        updateBoard: (state, action: PayloadAction<string[]>) => {
-            state.board = action.payload;
-        },
-        dragStart: (state, action: PayloadAction<any>) => {
-            state.squareBeingDragged = action.payload;
-        },
-        dragDrop: (state, action: PayloadAction<any>) => {
-            state.squareBeingReplaced = action.payload;
-        },
-        dragEnd: dragEndReducer,
-        moveBelow: moveBelowReducer,
+  name: "gemJam",
+  initialState,
+  reducers: {
+    updateBoard: (state, action: PayloadAction<string[]>) => {
+      state.board = action.payload;
     },
-})
-
-export const store = configureStore({
-    reducer:{
-        gemJam:gemJamSlice.reducer,
+    dragStart: (state, action: PayloadAction<any>) => {
+      state.squareBeingDragged = action.payload;
     },
-    middleware: (getDefaultMiddleware) => 
-        getDefaultMiddleware({
-            serializableCheck: false,
-        }),
+    dragDrop: (state, action: PayloadAction<any>) => {
+      state.squareBeingReplaced = action.payload;
+    },
+    dragEnd: dragEndReducer,
+    moveBelow: moveBelowReducer,
+    incrementScore: (state, action: PayloadAction<number>) => {
+      state.score += action.payload;
+    },
+  },
 });
 
-export const {updateBoard, moveBelow, dragDrop, dragEnd, dragStart} = gemJamSlice.actions;
+export const store = configureStore({
+  reducer: {
+    gemJam: gemJamSlice.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+export const { updateBoard, moveBelow, dragDrop, dragEnd, dragStart, incrementScore } =
+  gemJamSlice.actions;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

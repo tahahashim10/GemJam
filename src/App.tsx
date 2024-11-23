@@ -1,44 +1,41 @@
-import React, { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from './store/hooks'
-import { moveBelow, updateBoard } from './store';
-import { createBoard } from './utils/createBoard';
-import Board from './components/Board';
-import { checkForRowOfFour, checkForRowOfThree, isColumnOfFour, isColumnOfThree } from './utils/moveCheckLogic';
-import { formulaForColumnOfFour, formulaForColumnOfThree, generateInvalidMoves } from './utils/formulas';
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { moveBelow, updateBoard } from "./store";
+import { createBoard } from "./utils/createBoard";
+import Board from "./components/Board";
+import ScoreBoard from "./components/ScoreBoard";
+import { checkForRowOfFour, checkForRowOfThree, isColumnOfFour, isColumnOfThree } from "./utils/moveCheckLogic";
+import { formulaForColumnOfFour, formulaForColumnOfThree, generateInvalidMoves } from "./utils/formulas";
 
 function App() {
-
-  // if we want to initilize any reducer, then we need to dispatch it from the dispatch method
   const dispatch = useAppDispatch();
-
-  // grab the board and boardsize from useappselector
-  const board = useAppSelector(({gemJam:{board}}) => board);
-  const boardSize = useAppSelector(({gemJam:{boardSize}}) => boardSize);
+  const board = useAppSelector(({ gemJam: { board } }) => board);
+  const boardSize = useAppSelector(({ gemJam: { boardSize } }) => boardSize);
 
   useEffect(() => {
-    dispatch(updateBoard(createBoard(boardSize)))
+    dispatch(updateBoard(createBoard(boardSize)));
   }, [boardSize, dispatch]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       const newBoard = [...board];
-      // always check four before three, greedy approach to maximize popping
       isColumnOfFour(newBoard, boardSize, formulaForColumnOfFour(boardSize));
       checkForRowOfFour(newBoard, boardSize, generateInvalidMoves(boardSize, true));
       isColumnOfThree(newBoard, boardSize, formulaForColumnOfThree(boardSize));
-      checkForRowOfThree(newBoard, boardSize, generateInvalidMoves(boardSize))
-      
+      checkForRowOfThree(newBoard, boardSize, generateInvalidMoves(boardSize));
+
       dispatch(updateBoard(newBoard));
       dispatch(moveBelow());
     }, 150);
-    return () => clearInterval(timeout)
+    return () => clearInterval(timeout);
   }, [board, boardSize, dispatch]);
 
   return (
     <div className="flex items-center justify-center h-screen">
+      <ScoreBoard />
       <Board />
     </div>
   );
 }
 
-export default App
+export default App;

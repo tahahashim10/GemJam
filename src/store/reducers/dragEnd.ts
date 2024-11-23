@@ -10,6 +10,9 @@ import {
   checkForRowOfThree,
   isColumnOfFour,
 } from "../../utils/moveCheckLogic";
+import dropSound from "../../assets/sounds/dropSound.mp3";
+
+const dropAudio = new Audio(dropSound);
 
 export const dragEndReducer = (
   state: WritableDraft<{
@@ -17,15 +20,15 @@ export const dragEndReducer = (
     boardSize: number;
     squareBeingReplaced: Element | undefined;
     squareBeingDragged: Element | undefined;
+    score: number;
   }>
 ) => {
-
   const newBoard = [...state.board];
   let { boardSize, squareBeingDragged, squareBeingReplaced } = state;
+
   const squareBeingDraggedId: number = parseInt(
     squareBeingDragged?.getAttribute("gem-id") as string
   );
-
   const squareBeingReplacedId: number = parseInt(
     squareBeingReplaced?.getAttribute("gem-id") as string
   );
@@ -33,7 +36,6 @@ export const dragEndReducer = (
   newBoard[squareBeingReplacedId] = squareBeingDragged?.getAttribute(
     "src"
   ) as string;
-
   newBoard[squareBeingDraggedId] = squareBeingReplaced?.getAttribute(
     "src"
   ) as string;
@@ -52,19 +54,16 @@ export const dragEndReducer = (
     boardSize,
     formulaForColumnOfFour(boardSize)
   );
-
   const isARowOfFour: boolean | undefined = checkForRowOfFour(
     newBoard,
     boardSize,
     generateInvalidMoves(boardSize, true)
   );
-
   const isAColumnOfThree: boolean | undefined = isColumnOfThree(
     newBoard,
     boardSize,
     formulaForColumnOfThree(boardSize)
   );
-
   const isARowOfThree: boolean | undefined = checkForRowOfThree(
     newBoard,
     boardSize,
@@ -76,19 +75,20 @@ export const dragEndReducer = (
     validMove &&
     (isARowOfThree || isARowOfFour || isAColumnOfFour || isAColumnOfThree)
   ) {
+    if (isARowOfThree || isAColumnOfThree) state.score += 10;
+    if (isARowOfFour || isAColumnOfFour) state.score += 20;
+
+    dropAudio.play();
 
     squareBeingDragged = undefined;
     squareBeingReplaced = undefined;
-
   } else {
-
     newBoard[squareBeingReplacedId] = squareBeingReplaced?.getAttribute(
       "src"
     ) as string;
     newBoard[squareBeingDraggedId] = squareBeingDragged?.getAttribute(
       "src"
     ) as string;
-
   }
 
   state.board = newBoard;
