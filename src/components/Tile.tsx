@@ -14,6 +14,18 @@ function Tile({ gem, gemId }: { gem: string; gemId: number }) {
       style={{
         boxShadow: "inset 5px 5px 15px #062525, inset -5px -5px 15px #aaaab7bb",
       }}
+      onDragEnter={(e) => {
+        e.preventDefault();
+        e.currentTarget.classList.add("hover-highlight");
+      }}
+      onDragLeave={(e) => {
+        e.currentTarget.classList.remove("hover-highlight");
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove("hover-highlight");
+        dispatch(dragDrop(e.target));
+      }}
     >
       {gem && (
         <img
@@ -24,13 +36,14 @@ function Tile({ gem, gemId }: { gem: string; gemId: number }) {
           draggable={true}
           onDragStart={(e) => {
             dragAudio.play();
+            e.currentTarget.classList.add("dragging-highlight");
             dispatch(dragStart(e.target));
           }}
+          onDragEnd={(e) => {
+            e.currentTarget.classList.remove("dragging-highlight");
+            dispatch(dragEnd());
+          }}
           onDragOver={(e) => e.preventDefault()}
-          onDragEnter={(e) => e.preventDefault()}
-          onDragLeave={(e) => e.preventDefault()}
-          onDrop={(e) => dispatch(dragDrop(e.target))}
-          onDragEnd={() => dispatch(dragEnd())}
         />
       )}
     </div>

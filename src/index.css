@@ -6,3 +6,22 @@ body {
     background-image: url('./assets/background.jpg');
     background-size: cover;
 }
+
+/* Highlight for the tile currently being hovered over */
+/* Highlight for the tile currently being hovered over */
+.hover-highlight {
+    border: 4px solid rgba(255, 255, 0, 1); /* Thicker and brighter yellow dashed border */
+    box-shadow: 0px 0px 10px 5px rgba(255, 255, 0, 0.9); /* Stronger glowing effect */
+    opacity: 0.9;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  
+  /* Highlight for the gem currently being dragged */
+  .dragging-highlight {
+    border: 4px solid rgba(0, 255, 0, 0.8); /* Bright green border */
+    box-shadow: 0px 0px 10px 5px rgba(0, 255, 0, 0.8); /* Glowing effect */
+    opacity: 0.9;
+    transition: all 0.2s ease-in-out;
+  }
+  
